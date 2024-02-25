@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="eng" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="/static/css/style.css"  th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div>
+        <h1>Todo List</h1>
+
+        <!-- Form for adding new todos -->
+        <form action="/add" method="post" th:object="${todo}">
+            <label>
+                <input type="text" th:field="*{title}" placeholder="Add new todo" />
+            </label>
+            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</div>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+    <!-- TODOS -->
+    <div class="container">
+        <div  class="list">
+            <h2>Not done</h2>
+
+            <ul>
+                <!-- Loop to display todos -->
+                <li class="todo" th:unless="${todo.completed}" th:each="todo : ${todos}">
+                    <span  class="title" th:text="${todo.title}"></span>
+                    <!-- Task status-->
+                    <span class="status" th:unless="${todo.completed}"> | Not completed</span>
+                    <!-- Buttons -->
+                    <div class="buttons">
+                        <!-- Update task status to completed-->
+                        <form action="/complete/{id}" th:action="@{/complete/{id}(id=${todo.id})}" method="post">
+                            <button type="submit" th:unless="${todo.completed}">Completed</button>
+                        </form>
+                        <!-- Update task -->
+                        <!-- Delete task -->
+                        <form action="/delete/{id}" th:action="@{/delete/{id}(id=${todo.id})}" method="post">
+                            <button type="submit">Delete Task</button>
+                        </form>
+                    </div>
+                    <div>
+                        <form action="/update/{id}" th:action="@{/update/{id}(id=${todo.id})}" method="post" th:object="${todo}">
+                            <label>
+                                <input type="text" th:field="*{title}" placeholder="Update" />
+                            </label>
+                            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</div>
+                            <button type="submit">Update task</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+        <!-- DONE -->
+        <div class="list">
+
+            <h2>Done</h2>
+
+            <ul>
+                <!-- Loop to display todos -->
+                <li class="todo" th:if="${todo.completed}" th:each="todo : ${todos}">
+                    <span class="title"  th:text="${todo.title}"></span>
+                    <!-- Task status-->
+                    <span class="status" th:if="${todo.completed}"> | Completed</span>
+                    <!-- Buttons -->
+                    <div class="buttons">
+                        <!-- Update task status to not completed -->
+                        <form action="/complete/{id}" th:action="@{/complete/{id}(id=${todo.id})}" method="post">
+                            <button type="submit" th:if="${todo.completed}">Not completed</button>
+                        </form>
+                        <!-- Delete task -->
+                        <form action="/delete/{id}" th:action="@{/delete/{id}(id=${todo.id})}" method="post">
+                            <button type="submit">Delete Task</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+</body>
+</html>
